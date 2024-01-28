@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="/blog1" method="post">
+        <fieldset>
+            <legend>Add Blog</legend>
+            <div>
+                <input type="text" name="title" placeholder="Title" id="title">
+            </div>
+            <div>
+                <textarea name="body" id="body" cols="30" rows="10" placeholder="Body"></textarea>
+            </div>
+            <input type="submit" value="Update Blog">
+        </fieldset>
+
+    </form>
+    <script>
+        const id = location.hash.slice(1)
+        console.log(id);
+        fetch(`blog/${id}`)
+            .then(result => result.json())
+            .then(res => {
+                title.value = res.title;
+                body.value = res.body
+            })
+            .catch(error => console.error(error))
+
+
+        const form = document.querySelector('form')
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault()
+            const token = localStorage.getItem('token')
+            const title = e.target.title.value;
+            const body = e.target.body.value;
+
+            fetch(`/blog/${id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': token,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title, body })
+                }
+
+            )
+                .then(result => result.json())
+                .then(res => location.pathname = '/')
+                .catch(error => console.log(error))
+
+        })
+
+
+    </script>
+</body>
+
+</html>

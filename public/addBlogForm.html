@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="/blog" method="post">
+        <fieldset>
+            <legend>Add Blog</legend>
+            <div>
+                <input type="text" name="title" placeholder="Title">
+            </div>
+            <div>
+                <textarea name="body" cols="30" rows="10" placeholder="Body"></textarea>
+            </div>
+            <input type="submit" value="Add Blog">
+        </fieldset>
+
+    </form>
+
+    <script>
+        const form = document.querySelector("form")
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = e.target.title.value
+            const body = e.target.body.value
+
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                console.error('Token not found. User is not authenticated.');
+                return;
+            }
+
+            const response = await fetch(`/blog`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title, body })
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                console.log('User data:', userData);
+                location.pathname = '/'
+            } else {
+                console.error('Failed to fetch user data:', response.status);
+            }
+        })
+    </script>
+</body>
+
+</html>
